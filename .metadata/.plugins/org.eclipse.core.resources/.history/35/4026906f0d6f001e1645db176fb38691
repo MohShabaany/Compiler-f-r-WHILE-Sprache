@@ -1,0 +1,10 @@
+x:= 3;
+y:= 5;
+temp:=x+0;
+loop y do{ temp:= temp-1;};
+w:=1;
+z:=0;
+loop temp do{ x:= 0;};
+loop temp do{ y:= 1;};
+loop w do{ print(x);};
+loop z do{ print(y);};

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.ANTLRFileStream"/>
+    <fullyQualifiedTypeName name="org.antlr.runtime.ANTLRInputStream"/>
+    <fullyQualifiedTypeName name="org.antlr.runtime.ANTLRFileStream"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.ANTLRInputStream"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.CommonTokenStream"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.tree.ParseTree"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangParser.PrintContext"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.custum.WhilelangCustomListener"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.tree.ErrorNode"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangParser.SeqStatementContext"/>
+    <fullyQualifiedTypeName name="java.util.Vector"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangParser.WhileContext"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangParser.BlockContext"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangParser.StatementContext"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.tree.TerminalNode"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangParser.LoopContext"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangParser.ConditionContext"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.ParserRuleContext"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangParser.ProgramContext"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.misc.Graph.Node"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangBaseVisitor"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangParser"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.parser.WhilelangLexer"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.compiler.Main.TokenPrinter"/>
+    <fullyQualifiedTypeName name="org.antlr.runtime.tree.TreeWizard.Visitor"/>
+    <fullyQualifiedTypeName name="de.buildacompiler.compiler.MyVisitor"/>
+</qualifiedTypeNameHistroy>

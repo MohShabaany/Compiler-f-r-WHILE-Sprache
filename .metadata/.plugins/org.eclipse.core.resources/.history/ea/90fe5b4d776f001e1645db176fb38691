@@ -1,0 +1,13 @@
+num := 15;   // eine zufällige Zahl
+isEven := 1;  // Annahme: Die Zahl ist gerade
+
+// Prüfe, ob num gerade ist
+while (num > 1) do {
+   
+    num := num - 2;
+};
+
+loop num do {    // Wenn num ungerade ist, führe loop aus
+isEven :=  isEven - 1;
+}; 
+print(isEven);  // 1 bedeutet gerade, 0 bedeutet ungerade

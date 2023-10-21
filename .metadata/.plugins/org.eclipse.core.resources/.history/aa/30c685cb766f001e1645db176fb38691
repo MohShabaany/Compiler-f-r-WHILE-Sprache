@@ -1,0 +1,8 @@
+num := 15;   // eine zufällige Zahl
+isEven := 1;  // Annahme: Die Zahl ist gerade
+
+// Prüfe, ob num gerade ist
+while (x > 1) do {
+   
+    num := num - 2;
+};

@@ -1,0 +1,23 @@
+
+
+
+
+
+
+w := c+1;           // 'c' ist nicht defeniert.
+
+x := 2 + v;       // 'v' ist nicht defeniert.
+
+y := 2;           // Zuweisung sollte lauten:
+x := y;           // 'x := y + 0;'.
+
+while (g < 9)do{ // 'g' ist nicht defeniert.
+
+print (n);       // 'n' ist nicht defeniert.
+};
+loop r do {      // 'r' ist nicht defeniert.
+print (n); };   
+
+z := 1;
+y := x + z;     // Direkte Addition nicht zulässig.
+

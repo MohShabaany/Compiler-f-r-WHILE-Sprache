@@ -1,0 +1,357 @@
+package de.buildacompiler.compiler;
+import java.util.HashMap;
+import java.util.*;
+
+import de.buildacompiler.parser.*;
+
+
+public class MyVisitor extends WhilelangBaseVisitor<String> {
+    private StringBuilder asmCode;
+
+    public MyVisitor() {
+        asmCode = new StringBuilder();
+    }
+ 
+    @Override
+    public String visitProgram(WhilelangParser.ProgramContext ctx) {
+        asmCode.append("section .data\n");
+        asmCode.append("section .text\n");
+        asmCode.append("global _start\n");
+        asmCode.append("_start:\n");
+
+        for (WhilelangParser.StatementContext statementContext : ctx.statement()) {
+            visit(statementContext);
+        } 
+
+        asmCode.append("mov eax, 1\n");
+        asmCode.append("int 0x80\n");
+
+        return asmCode.toString();
+    }
+
+    @Override
+    public String visitAssignment(WhilelangParser.AssignmentContext ctx) {
+        String variable = ctx.VARIABLE().getText();
+        String expression = visit(ctx.expression());
+
+        asmCode.append("mov dword [" + variable + "], " + expression + "\n");
+
+        return null;
+    }
+
+    @Override
+    public String visitLoop(WhilelangParser.LoopContext ctx) {
+        String term = visit(ctx.term());
+
+        asmCode.append("loop_start:\n");
+        asmCode.append("cmp dword [" + term + "], 0\n");
+        asmCode.append("jle loop_end\n");
+
+        visit(ctx.program());
+
+        asmCode.append("jmp loop_start\n");
+        asmCode.append("loop_end:\n");
+
+        return null;
+    }
+
+    @Override
+    public String visitPrint(WhilelangParser.PrintContext ctx) {
+        String expression = visit(ctx.expression());
+
+        asmCode.append("mov eax, 4\n");
+        asmCode.append("mov ebx, 1\n");
+        asmCode.append("mov ecx, " + expression + "\n");
+        asmCode.append("mov edx, 1\n");
+        asmCode.append("int 0x80\n");
+
+        return null;
+    }
+
+    @Override
+    public String visitTerm(WhilelangParser.TermContext ctx) {
+        if (ctx.VARIABLE() != null) {
+            return ctx.VARIABLE().getText();
+        } else {
+            return ctx.CONSTANT().getText();
+        }
+    }
+
+    @Override
+    public String visitExpression(WhilelangParser.ExpressionContext ctx) {
+        String left = visit(ctx.term());
+
+        if (ctx.expression() != null) {
+            String operator = ctx.getChild(1).getText();
+            String right = visit(ctx.expression());
+
+            asmCode.append("mov eax, " + left + "\n");
+            asmCode.append("mov ebx, " + right + "\n");
+
+            if (operator.equals("+")) {
+                asmCode.append("add eax, ebx\n");
+            } else if (operator.equals("-")) {
+                asmCode.append("sub eax, ebx\n");
+            }
+
+            return "eax";
+        } else {
+            return left;
+        }
+    }
+    @Override
+    public String visitConditional(WhilelangParser.ConditionalContext ctx) {
+        String condition = visit(ctx.condition());
+        String ifStatement = visit(ctx.statement(0));
+
+        asmCode.append(condition).append("\n");
+        asmCode.append("cmp eax, 0\n");
+        asmCode.append("je ELSE_LABEL\n");
+        asmCode.append(ifStatement).append("\n");
+        asmCode.append("jmp END_IF_LABEL\n");
+        asmCode.append("ELSE_LABEL:\n");
+
+        if (ctx.statement().size() > 1) {
+            String elseStatement = visit(ctx.statement(1));
+            asmCode.append(elseStatement).append("\n");
+        }
+
+        asmCode.append("END_IF_LABEL:\n");
+
+        return null;
+    }
+
+    @Override
+    public String visitWhileDoLoop(WhilelangParser.WhileDoLoopContext ctx) {
+        String condition = visit(ctx.condition());
+        String loopStatements = visit(ctx.program());
+
+        asmCode.append("WHILE_LABEL:\n");
+        asmCode.append(condition).append("\n");
+        asmCode.append("cmp eax, 0\n");
+        asmCode.append("je END_WHILE_LABEL\n");
+        asmCode.append(loopStatements).append("\n");
+        asmCode.append("jmp WHILE_LABEL\n");
+        asmCode.append("END_WHILE_LABEL:\n");
+
+        return null;
+    }
+
+    @Override
+    public String visitCondition(WhilelangParser.ConditionContext ctx) {
+        String leftExpression = visit(ctx.expression(0));
+        String operator = ctx.comparisonOperator().getText();
+        String rightExpression = visit(ctx.expression(1));
+
+        asmCode.append(leftExpression).append("\n");
+        asmCode.append("mov ebx, eax\n");
+        asmCode.append(rightExpression).append("\n");
+        asmCode.append("cmp eax, ebx\n");
+
+        if (operator.equals("==")) {
+            asmCode.append("mov eax, 0\n");
+            asmCode.append("sete al\n");
+        } else if (operator.equals("!=")) {
+            asmCode.append("mov eax, 0\n");
+            asmCode.append("setne al\n");
+        } else if (operator.equals("<")) {
+            asmCode.append("mov eax, 0\n");
+            asmCode.append("setl al\n");
+        } else if (operator.equals(">")) {
+            asmCode.append("mov eax, 0\n");
+            asmCode.append("setg al\n");
+        } else if (operator.equals("<=")) {
+            asmCode.append("mov eax, 0\n");
+            asmCode.append("setle al\n");
+        } else if (operator.equals(">=")) {
+            asmCode.append("mov eax, 0\n");
+            asmCode.append("setge al\n");
+        }
+
+        return null;
+    }
+}
+
+
+
+
+
+
+/*
+public class MyVisitor extends WhilelangBaseVisitor<String> {
+    private StringBuilder assemblyCode;
+    private Map<String, Integer> variables;
+
+    public MyVisitor() {
+        assemblyCode = new StringBuilder();
+        variables = new HashMap<>();
+    }
+
+    @Override
+    public String visitProgram(WhilelangParser.ProgramContext ctx) {
+        for (WhilelangParser.StatementContext statementContext : ctx.statement()) {
+            visit(statementContext);
+            assemblyCode.append("\n");
+        }
+        return assemblyCode.toString();
+    }
+    
+    @Override
+    public String visitAssignment(WhilelangParser.AssignmentContext ctx) {
+        String varName = ctx.VARIABLE().getText();
+        String expression = visit(ctx.expression());
+       
+        assemblyCode.append("MOV ").append(varName).append(", ").append(expression).append("\n");
+
+        return null;
+    }
+
+    @Override
+    public String visitAssignment(WhilelangParser.AssignmentContext ctx) {
+        String variable = ctx.VARIABLE().getText();
+        int value = Integer.parseInt(visit(ctx.expression()));
+        variables.put(variable, value);
+
+        assemblyCode.append("MOV ").append(variable).append(", ").append(value);
+        return null;
+    }
+
+    @Override
+    public String visitConditional(WhilelangParser.ConditionalContext ctx) {
+        String condition = visit(ctx.condition());
+        String label1 = generateLabel();
+        String label2 = generateLabel();
+
+        assemblyCode.append("CMP ").append(condition).append(", 0\n");
+        assemblyCode.append("JE ").append(label1).append("\n");
+        visit(ctx.statement(0));
+        assemblyCode.append("JMP ").append(label2).append("\n");
+        assemblyCode.append(label1).append(":\n");
+        //visit(ctx.statement(1));
+        assemblyCode.append(label2).append(":\n");
+ 
+        return null;
+    }
+
+    @Override
+    public String visitLoop(WhilelangParser.LoopContext ctx) {
+        String term = visit(ctx.term());
+        String label1 = generateLabel();
+        String label2 = generateLabel();
+
+        assemblyCode.append(label1).append(":\n");
+        assemblyCode.append("CMP ").append(term).append(", 0\n");
+        assemblyCode.append("JE ").append(label2).append("\n");
+        visit(ctx.program());
+        assemblyCode.append("JMP ").append(label1).append("\n");
+        assemblyCode.append(label2).append(":\n");
+
+        return null;
+    }
+
+    @Override
+    public String visitWhileDoLoop(WhilelangParser.WhileDoLoopContext ctx) {
+        String condition = visit(ctx.condition());
+        String label1 = generateLabel();
+        String label2 = generateLabel();
+
+        assemblyCode.append(label1).append(":\n");
+        assemblyCode.append("CMP ").append(condition).append(", 0\n");
+        assemblyCode.append("JE ").append(label2).append("\n");
+        visit(ctx.program());
+        assemblyCode.append("JMP ").append(label1).append("\n");
+        assemblyCode.append(label2).append(":\n");
+
+        return null;
+    }
+
+    @Override
+    public String visitPrint(WhilelangParser.PrintContext ctx) {
+        String expression = visit(ctx.expression());
+
+        assemblyCode.append("PRINT ").append(expression);
+        return null;
+    } 
+  
+    @Override
+    public String visitExpression(WhilelangParser.ExpressionContext ctx) {
+        if (ctx.getChildCount() == 1) {
+            return visit(ctx.term(0));
+        } else if (ctx.getChildCount() == 3) {
+            String term1 = visit(ctx.term(0));
+            String term2 = visit(ctx.term(1));
+
+            String operator = ctx.getChild(1).getText();
+            String resultVariable = generateVariable();
+
+            assemblyCode.append("MOV ").append(resultVariable).append(", ").append(term1).append("\n");
+            assemblyCode.append("ADD ").append(resultVariable).append(", ").append(term2);
+
+            return resultVariable;
+        } else {
+            throw new RuntimeException("Invalid expression");
+        }
+    }
+
+    @Override
+    public String visitCondition(WhilelangParser.ConditionContext ctx) {
+        String expression1 = visit(ctx.expression(0));
+        String expression2 = visit(ctx.expression(1));
+
+        String operator = ctx.comparisonOperator().getText();
+        String resultVariable = generateVariable();
+
+        assemblyCode.append("MOV ").append(resultVariable).append(", ").append(expression1).append("\n");
+        assemblyCode.append("CMP ").append(resultVariable).append(", ").append(expression2).append("\n");
+
+        if (operator.equals("==")) {
+            assemblyCode.append("JE ");
+        } else if (operator.equals("!=")) {
+            assemblyCode.append("JNE ");
+        } else if (operator.equals("<")) {
+            assemblyCode.append("JL ");
+        } else if (operator.equals(">")) {
+            assemblyCode.append("JG ");
+        } else if (operator.equals("<=")) {
+            assemblyCode.append("JLE ");
+        } else if (operator.equals(">=")) {
+            assemblyCode.append("JGE ");
+        }
+
+        assemblyCode.append(generateLabel());
+
+        return resultVariable;
+    }
+
+    @Override
+    public String visitTerm(WhilelangParser.TermContext ctx) {
+        String text = ctx.getText();
+
+        if (Character.isLetter(text.charAt(0))) {
+            return text;
+        } else {
+            return text;
+        }
+    }
+
+    private String generateLabel() {
+        return "L" + assemblyCode.length();
+    }
+
+    private String generateVariable() {
+        return "V" + variables.size();
+    }
+    @Override
+    protected String aggregateResult(String aggregate, String nextResult) {
+    	if (aggregate == null) {
+    		return nextResult ;
+    		
+    		
+    	}
+    	if (nextResult == null) {
+    		return aggregate ;
+    	}
+    	return aggregate + "/n" + nextResult ;
+    }
+
+}*/

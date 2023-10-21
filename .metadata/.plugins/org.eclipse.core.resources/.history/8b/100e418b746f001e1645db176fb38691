@@ -1,0 +1,24 @@
+// Erste Eingaben Fehler
+y := 2;
+x := y;
+///////
+x := m;
+// Zweite Eingaben Fehler
+z := 1;
+y := x + z;
+//////
+
+z := 1+k;
+/////
+
+while (y< x)do{
+print (x);
+};
+
+while (5< l)do{
+print (x);
+};
+
+while (m< 5)do{
+print (p);
+};

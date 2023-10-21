@@ -1,0 +1,7 @@
+
+x := v + 2;      // v ist nicht defeniert.
+while (g< 9)do{  // g ist nicht defeniert.
+print (n);       // n ist nicht defeniert.
+};
+
+loop r do {print (n); };   // n ist nicht defeniert.

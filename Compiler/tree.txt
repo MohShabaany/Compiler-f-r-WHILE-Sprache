@@ -1,0 +1,5 @@
+(program (statement (assignment x := (expression (term 3)))) ;
+	(statement (whileDoLoop while ( (condition (expression (term x)) 
+        (comparisonOperator >) (expression (term 0))) ) do { 
+((statement (print print ( (expression (term x)) ))) ;
+statement (assignment x := (expression (expression (term x)) - (term 1)))) ;) })) ; )

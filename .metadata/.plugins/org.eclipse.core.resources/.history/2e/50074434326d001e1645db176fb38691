@@ -1,0 +1,116 @@
+package de.buildacompiler.compiler;
+
+import java.util.*;
+
+import org.antlr.runtime.tree.TreeWizard.Visitor;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+
+import de.buildacompiler.parser.*;
+import java.io.*;
+
+
+public class Main {
+	
+
+	public static void main(String[] args)throws Exception  {
+		
+		
+		ANTLRInputStream input = new ANTLRFileStream("code.whilelang");
+		
+		// Erstelle einen Lexer
+		WhilelangLexer lexer = new WhilelangLexer(input);
+				
+		// Erstelle einen Token-Stream aus dem Lexer
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+	
+		// Erstelle einen Parser
+		WhilelangParser parser = new WhilelangParser(tokens);
+		
+		// Starte das Parsing und erhalte den Parse-Baum (AST)
+        ParseTree tree = parser.program();
+      
+       String dotNotation = convertToDot(tree);
+        
+        try {
+            PrintStream output = new PrintStream(new File("tree.dot"));
+            System.setOut(output);
+           String  buildAst =  dotNotation;
+           
+           output.println(buildAst);
+            output.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+      
+        
+        try { 
+        PrintStream output = new PrintStream(new File("assembly.asm"));
+        System.setOut(output);
+        String assemblyCode = "section .data\n"
+					+ "		out_format db \"Result: %d\", 10, 0  ; Format string for printf-style output\n"
+					+ "section .text\n"
+					+ "  extern _printf\n"
+					+ "  global _main\n"
+					+ "_main:\n" ;
+			   assemblyCode += new MyVisitor().visit(tree);
+			   assemblyCode +="; Beenden und Aufräumen \n"
+			   		        + "add rsp, " + new MyVisitor().getStackOffsetAdd() +"               ; Stack aufräumen.\n"
+					   		+"pop rbp                   ; Holt den Basiszeiger zurück.\n"
+					   		+"ret                       ; Funktion beenden\n";
+			   				
+			   
+        output.println(assemblyCode);
+        output.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+       
+
+        
+       
+ 
+
+     
+		
+		
+		
+		
+		
+	}	
+	
+	public static String convertToDot(ParseTree tree) {
+	    StringBuilder dotBuilder = new StringBuilder();
+	    dotBuilder.append("digraph G {\n");
+
+	    convertNodeToDot(dotBuilder, tree, 0, 0);
+
+	    dotBuilder.append("}");
+	    return dotBuilder.toString();
+	}
+ 
+	private static int convertNodeToDot(StringBuilder dotBuilder, ParseTree node, int index, int depth) {
+	    int currentIndex = index;
+	    String nodeName = "\"" + currentIndex + "_" + node.getText() + "\"";
+	    dotBuilder.append(nodeName).append("[label=\"").append(node.getText()).append("\",color=").append(getColorForDepth(depth)).append("];\n");
+
+	    for (int i = 0; i < node.getChildCount(); i++) {
+	        int childIndex = currentIndex + 1;
+	        String childName = "\"" + childIndex + "_" + node.getChild(i).getText() + "\"";
+	        dotBuilder.append(nodeName).append(" -> ").append(childName).append(";\n");
+	        currentIndex = convertNodeToDot(dotBuilder, node.getChild(i), childIndex, depth + 1);
+	    } 
+
+	    return currentIndex;
+	}
+
+	private static String getColorForDepth(int depth) {
+	    String[] colors = {"red", "blue", "green", "yellow", "orange", "cyan", "pink"};
+	    return colors[depth % colors.length];
+	}
+	
+
+
+	}
+ 
+
