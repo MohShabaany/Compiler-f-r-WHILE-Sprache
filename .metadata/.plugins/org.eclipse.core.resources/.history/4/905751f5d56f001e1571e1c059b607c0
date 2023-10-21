@@ -22,7 +22,7 @@ public class WhilelangLexer extends Lexer {
 		T__17=18, VARIABLE=19, CONSTANT=20, Comment=21, Space=22;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
-	}; 
+	};
 
 	public static String[] modeNames = {
 		"DEFAULT_MODE"
