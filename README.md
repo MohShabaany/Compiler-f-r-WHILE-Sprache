@@ -1,6 +1,6 @@
 # Compiler-fuer-WHILE-Sprache
 # Kompilieren und Ausführen von x86 Assembly-Code im Terminal:
-Diese Arbeit wird auf einem macOS-System durchgeführt,das über 64-Bit-Register verfügt. Es muss sichergestellt werden, dass der NASM-Compiler auf dem System installiert ist. Nach der Installation sollten die unten aufgeführten Schritte befolgt werden:
+Diese Arbeit wird auf einem macOS-System durchgeführt, das über 64-Bit-Register verfügt. Es muss sichergestellt werden, dass der NASM-Compiler auf dem System installiert ist. Nach der Installation sollten die unten aufgeführten Schritte befolgt werden:
 
 1- Das Terminal sollte geöffnet werden.
 
