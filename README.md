@@ -8,15 +8,15 @@ Diese Arbeit wird auf einem macOS-System durchgeführt, das über 64-Bit-Registe
 
 3- Nachdem das Compiler-Verzeichnis erreicht wurde, müssen die folgenden Befehle ausgeführt werden, um die Assembly-Datei zu kompilieren und das Programm auszuführen:
 
-    a- Kompilieren Sie Ihre assembly.asm-Datei mit diesem Befehl zu einer Object-Datei.
+a- Kompilieren Sie Ihre assembly.asm-Datei mit diesem Befehl zu einer Object-Datei.
       
-nasm -f macho64 assembly.asm
+    nasm -f macho64 assembly.asm
   
-    b- Anschließend wird die Object-Datei mit diesem Befehl verlinkt und das ausführbare Programm ’assembly’ erstellt.
+b- Anschließend wird die Object-Datei mit diesem Befehl verlinkt und das ausführbare Programm ’assembly’ erstellt.
       
-clang assembly.o -o assembly -Wl,-no_pie
+    clang assembly.o -o assembly -Wl,-no_pie
   
-    c- Schließlich wird das kompilierte Programm mit diesem Befehl ausgeführt.
+c- Schließlich wird das kompilierte Programm mit diesem Befehl ausgeführt.
       
-          ./assembly
+    ./assembly
 
