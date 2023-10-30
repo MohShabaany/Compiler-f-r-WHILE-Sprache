@@ -1,1 +1,1 @@
-# Compiler-f-r-WHILE-Sprache
+# Compiler-fuer-WHILE-Sprache
